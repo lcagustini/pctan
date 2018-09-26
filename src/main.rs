@@ -174,7 +174,7 @@ fn main() {
     let mut font = ttf_context.load_font("roboto.ttf", FONT_SIZE).unwrap();
     font.set_style(sdl2::ttf::STYLE_NORMAL);
 
-    let mut canvas = window.into_canvas().build().unwrap();
+    let mut canvas = window.into_canvas().accelerated().present_vsync().build().unwrap();
     let texture_creator = canvas.texture_creator();
 
     let mut balls: Vec<Ball> = Vec::new();
@@ -188,6 +188,7 @@ fn main() {
     let mut ball_timer = 0;
     let mut blocks: [[Block; GRID_SIZE]; GRID_SIZE] = [[Block{count: 0, color: BG_COLOR}; GRID_SIZE]; GRID_SIZE];
     let mut mouse = player.pos;
+    let mut first_ball_x = player.pos.x;
 
     let file_score: usize;
     {
@@ -268,7 +269,7 @@ fn main() {
             }
             if ball.pos.y + ball.radius >= WINDOW_HEIGHT as f32 {
                 if player.ball_state == BallState::WaitingFirstBall {
-                    player.pos.x = ball.pos.x;
+                    first_ball_x = ball.pos.x;
                     player.ball_state = BallState::WaitingLastBall;
                 }
                 removable = i as isize;
@@ -309,6 +310,7 @@ fn main() {
         }
 
         if balls.is_empty() && player.ball_state == BallState::WaitingLastBall {
+            player.pos.x = first_ball_x;
             player.ball_count += 1;
             player.shoot_state = ShootState::WaitingToShoot;
             player.ball_state = BallState::WaitingFirstBall;
@@ -388,7 +390,7 @@ fn main() {
         canvas.set_draw_color(color);
 
         ball_timer += 1;
-        std::thread::sleep(std::time::Duration::new(0, 1_000_000_000u32 / 50));
+        std::thread::sleep(std::time::Duration::new(0, 1_000_000_000u32 / 60));
         canvas.present();
     }
 }
