@@ -164,7 +164,7 @@ fn main() {
     let video_subsystem = sdl_context.video().unwrap();
     let ttf_context = sdl2::ttf::init().unwrap();
 
-    let window = video_subsystem.window("ColorCoding", WINDOW_WIDTH, WINDOW_HEIGHT)
+    let window = video_subsystem.window("PCTan", WINDOW_WIDTH, WINDOW_HEIGHT)
         .position_centered()
         .allow_highdpi()
         .resizable()
@@ -248,7 +248,7 @@ fn main() {
         canvas.clear();
 
         if player.shoot_state == ShootState::Shooting && ball_timer >= 3 && player.balls_shot != player.ball_count {
-            balls.push(Ball{pos: player.pos, radius: 10.0, dir: player.aim, speed: 8.0});
+            balls.push(Ball{pos: player.pos, radius: 10.0, dir: player.aim, speed: 10.0});
 
             ball_timer = 0;
             player.balls_shot += 1;
